@@ -1,0 +1,6 @@
+# Secrets (dot-env files / folders)
+.env
+.env/
+
+# Local Conda environment (conda create --prefix ./env …)
+env/
