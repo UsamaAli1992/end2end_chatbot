@@ -1,0 +1,12 @@
+# GGUF / quantized models on CPU — PyPI only has 0.2.x (no 5.x; don’t confuse with sentence-transformers / transformers)
+ctransformers==0.2.27
+
+# Embeddings — use 5.x on Python 3.13 (3.0.1 supports only Python <3.13)
+sentence-transformers>=5.0.0
+
+pinecone-client==6.0.0
+flask
+
+langchain==0.3.13
+langchain-community==0.3.13
+
