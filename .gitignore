@@ -4,3 +4,6 @@
 
 # Local Conda environment (conda create --prefix ./env …)
 env/
+
+# Downloaded weights / HF cache (large — do not commit)
+model/
