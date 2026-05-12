@@ -1,0 +1,9 @@
+Metadata-Version: 2.4
+Name: frp-chatbot
+Version: 0.0.1
+Summary: Paper based chatbot for FRP
+Author: Usama Ali
+Author-email: usamauet28@gmail.com
+Dynamic: author
+Dynamic: author-email
+Dynamic: summary
