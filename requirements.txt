@@ -10,3 +10,11 @@ flask
 langchain==0.3.13
 langchain-community==0.3.13
 
+# PDF loading (PyPDFLoader)
+pypdf>=5.0.0
+
+# Local Llama (safetensors) — install PyTorch separately: https://pytorch.org/get-started/locally/
+transformers>=4.44.0
+accelerate>=0.34.0
+safetensors>=0.4.0
+
