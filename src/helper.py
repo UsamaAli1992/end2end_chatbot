@@ -45,3 +45,53 @@ def download_hugging_face_embeddings(
 ):
     """Return a LangChain HuggingFaceEmbeddings instance for chunk vectors."""
     return HuggingFaceEmbeddings(model_name=model_name)
+
+
+def build_hf_text_generation_pipeline():
+    """Local text-generation pipeline (same strategy as research/trials.ipynb)."""
+    import torch
+    from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
+
+    local_llama = Path("model") / "Llama-3.2-3B-Instruct"
+    cpu_light = "Qwen/Qwen2.5-0.5B-Instruct"
+    use_cuda = torch.cuda.is_available()
+    if use_cuda:
+        model_id = str(local_llama)
+        dtype = torch.float16
+        load_kw = {"torch_dtype": dtype, "device_map": "auto"}
+    else:
+        model_id = cpu_light
+        dtype = torch.float32
+        load_kw = {"torch_dtype": dtype, "low_cpu_mem_usage": True}
+
+    print(
+        "LLM:",
+        "CUDA → local Llama 3.2 3B" if use_cuda else "CPU → lightweight " + cpu_light,
+    )
+
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_id,
+        trust_remote_code=True,
+        clean_up_tokenization_spaces=False,
+    )
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+
+    hf_model = AutoModelForCausalLM.from_pretrained(
+        model_id, trust_remote_code=True, **load_kw
+    )
+    if not use_cuda:
+        hf_model = hf_model.to("cpu")
+
+    return pipeline(
+        "text-generation",
+        model=hf_model,
+        tokenizer=tokenizer,
+        max_new_tokens=256,
+        do_sample=True,
+        temperature=0.2,
+        top_p=0.9,
+        repetition_penalty=1.15,
+        return_full_text=False,
+        pad_token_id=tokenizer.eos_token_id,
+    )

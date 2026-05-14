@@ -1,0 +1,62 @@
+{% from "macros/chat_message.html" import new_message %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>FRP chatbot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}" />
+</head>
+<body>
+  <div id="chat" class="chat --dark-theme">
+    <header class="chat__header">
+      <h1 class="chat__header__title">FRP assistant</h1>
+      <form class="chat__header__actions" method="post" action="{{ url_for('chat') }}">
+        <input type="hidden" name="action" value="clear" />
+        <button type="submit" class="chat__header__button">New chat</button>
+      </form>
+    </header>
+
+    <div class="chat__conversation-board" id="conversation-board" role="log" aria-live="polite" aria-relevant="additions">
+      {% for row in conversation %}
+        {{ new_message(row.avatar, row.name, row.messages, row.type, row.citations|default(none)) }}
+      {% endfor %}
+    </div>
+
+    <div class="chat__conversation-panel">
+      <form class="chat__conversation-panel__container" method="post" action="{{ url_for('chat') }}" id="chat-form">
+        <button type="button" class="chat__conversation-panel__button panel-item btn-icon add-file-button" aria-label="Add file (not wired)" tabindex="-1">
+          <svg class="feather feather-plus" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+        <button type="button" class="chat__conversation-panel__button panel-item btn-icon emoji-button" aria-label="Emoji (not wired)" tabindex="-1">
+          <svg class="feather feather-smile" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+            <line x1="9" y1="9" x2="9.01" y2="9"></line>
+            <line x1="15" y1="9" x2="15.01" y2="9"></line>
+          </svg>
+        </button>
+        <input class="chat__conversation-panel__input panel-item" type="text" name="message" id="message-input" placeholder="Type a message..." autocomplete="off" required />
+        <button type="submit" class="chat__conversation-panel__button panel-item btn-icon send-message-button" aria-label="Send">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var board = document.getElementById("conversation-board");
+      if (board) board.scrollTop = board.scrollHeight;
+    })();
+  </script>
+</body>
+</html>
